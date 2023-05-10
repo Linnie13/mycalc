@@ -1,0 +1,79 @@
+import java.sql.SQLOutput;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+
+public class Main {
+    private static final Scanner SCANNER = new Scanner(System.in);
+    private static final String[] ROMAN_NUMS = new String[] {"0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+            "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV", "XXV",
+            "XXVI", "XXVII", "XXVIII", "XXIX", "XXX", "XXXI", "XXXII", "XXXIII", "XXXIV", "XXXV", "XXXVI", "XXXVII",
+            "XXXVIII", "XXXIX", "XL", "XLI", "XLII", "XLIII", "XIV", "XLV", "XLVI", "XLVII", "XLVIII", "XLIX", "L",
+            "LI", "LII", "LIII", "LIV", "LV", "LVI", "LVII", "LVIII", "LIX", "LX", "LXI", "LXII", "LXIII", "LXIV",
+            "LXV", "LXVI", "LXVII", "LXVIII", "LXIX", "LXX", "LXXI", "LXXII", "LXXIII", "LXXIV", "LXXV", "LXXVI",
+            "LXXVII", "LXXVIII", "LXXIX", "LXXX", "LXXXI", "LXXXII", "LXXXIII", "LXXXIV", "LXXXV", "VXXXVI",
+            "LXXXVII", "LXXXVIII", "LXXXIX", "XC", "XCI", "XCII", "XCIII", "XCIV", "XCV", "XCVI", "XCVII", "XCVIII",
+            "XCIX", "C"};
+
+
+    public static String calc(String inputData) throws Exception{
+        String[] inputArray = inputData.split(" ");
+
+        if (inputArray.length != 3) throw new Exception();
+        if (!(inputArray[1].equals("+") || inputArray[1].equals("-") ||
+                inputArray[1].equals("*") || inputArray[1].equals("/"))) throw new Exception();
+
+        String firstArgument = inputArray[0];
+        String secondArgument = inputArray[2];
+        if ((!isDigit(firstArgument) && isDigit(secondArgument)) || (isDigit(firstArgument) && !isDigit(secondArgument))) throw new Exception();
+
+        int a = 0, b = 0;
+        boolean isArabic = false;
+        if (!isDigit(firstArgument) && !isDigit(secondArgument)) {
+            for (int i = 0; i < ROMAN_NUMS.length - 1; i++) {
+                if (firstArgument.equals(ROMAN_NUMS[i])) a = i;
+                if (secondArgument.equals(ROMAN_NUMS[i])) b = i;
+            }
+        } else {
+            isArabic = true;
+            a = Integer.parseInt(inputArray[0]);
+            b = Integer.parseInt(inputArray[2]);
+        }
+
+        if (a < 1 || a > 10 || b < 1 || b > 10) throw new Exception();
+        int c = 0;
+        switch (inputArray[1]) {
+            case "+":
+                c = a+b;
+                break;
+            case "-":
+                c = a-b;
+                break;
+            case "*":
+                c = a*b;
+                break;
+            case "/":
+                c = a/b;
+                break;
+        }
+        if (!isArabic && c < 1) throw new Exception();
+
+        String result;
+        if (!isArabic) {
+            result = ROMAN_NUMS[c];
+        } else {
+            result = String.valueOf(c);
+        }
+        return result;
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("Введите арифметическое выражение");
+        String inputData = SCANNER.nextLine();
+        System.out.println(calc(inputData));
+    }
+
+    private static boolean isDigit(String digit) {
+        return  Pattern.matches("\\d+", digit);
+    }
+}
